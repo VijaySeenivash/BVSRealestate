@@ -1,0 +1,573 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  ChevronLeft,
+  Plus,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  X,
+  Sparkles,
+} from "lucide-react";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ImageManager } from "@/components/admin/ImageManager";
+import { supabase } from "@/lib/supabase/client";
+import { PropertyStatus } from "@/config/site";
+
+const PROPERTY_TYPES = [
+  "RESIDENTIAL PLOT",
+  "LAND",
+  "HOUSE",
+  "COMMERCIAL PROPERTY",
+  "AGRICULTURAL LAND",
+  "VILLA",
+  "APARTMENT",
+];
+
+const AREA_UNITS = ["sq.ft", "cents", "acres"];
+const PRICE_UNITS = ["Lakhs", "Crores", "Thousand"];
+
+export default function NewPropertyPage() {
+  const router = useRouter();
+
+  // Form fields
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [isSlugEdited, setIsSlugEdited] = useState(false);
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState<string>("RESIDENTIAL PLOT");
+  const [area, setArea] = useState<string>("");
+  const [areaUnit, setAreaUnit] = useState<string>("sq.ft");
+  const [price, setPrice] = useState<string>("");
+  const [priceUnit, setPriceUnit] = useState<string>("Lakhs");
+  const [status, setStatus] = useState<PropertyStatus>("AVAILABLE");
+  const [description, setDescription] = useState("");
+  const [highlights, setHighlights] = useState<string[]>([
+    "Clear Title & DTCP Approved",
+    "Immediate Registration Available",
+  ]);
+  const [newHighlight, setNewHighlight] = useState("");
+  const [mapsUrl, setMapsUrl] = useState("");
+
+  // Images state managed by ImageManager
+  const [images, setImages] = useState<string[]>([
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+  ]);
+
+  // Form submission state
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+
+  // Auto-generate slug from title
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    if (!isSlugEdited) {
+      const generatedSlug = val
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/[\s_-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      setSlug(generatedSlug);
+    }
+  };
+
+  // Highlights management
+  const handleAddHighlight = () => {
+    if (!newHighlight.trim()) return;
+    setHighlights([...highlights, newHighlight.trim()]);
+    setNewHighlight("");
+  };
+
+  const handleRemoveHighlight = (index: number) => {
+    setHighlights(highlights.filter((_, i) => i !== index));
+  };
+
+  // Form Submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    setFormSuccess(null);
+
+    // Validation
+    const cleanTitle = title.trim();
+    const cleanSlug = slug
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    const cleanLocation = location.trim();
+    const numArea = Number(area);
+    const numPrice = Number(price);
+
+    if (!cleanTitle) {
+      setFormError("Please enter a property title.");
+      return;
+    }
+    if (!cleanSlug) {
+      setFormError("Please enter a valid URL slug for this property.");
+      return;
+    }
+    if (!cleanLocation) {
+      setFormError("Please enter the property location.");
+      return;
+    }
+    if (!area || isNaN(numArea) || numArea <= 0) {
+      setFormError("Please enter a valid positive area number.");
+      return;
+    }
+    if (!price || isNaN(numPrice) || numPrice <= 0) {
+      setFormError("Please enter a valid positive price number.");
+      return;
+    }
+    if (!PROPERTY_TYPES.includes(propertyType)) {
+      setFormError("Please select a valid property type.");
+      return;
+    }
+    if (!["AVAILABLE", "RESERVED", "SOLD"].includes(status)) {
+      setFormError("Please select a valid property status.");
+      return;
+    }
+    if (images.length === 0) {
+      setFormError("Please add at least one photograph for the property listing.");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      if (!supabase) {
+        throw new Error("Supabase connection is not available. Check .env.local.");
+      }
+
+      // Check for slug uniqueness
+      const { data: existingSlug, error: slugError } = await supabase
+        .from("properties")
+        .select("id")
+        .eq("slug", cleanSlug)
+        .maybeSingle();
+
+      if (slugError) {
+        console.warn("[Slug Check Warning]:", slugError.message);
+      } else if (existingSlug) {
+        setFormError(
+          `A property listing with the slug "${cleanSlug}" already exists in the database. Please provide a distinct title or slug.`
+        );
+        setSubmitting(false);
+        return;
+      }
+
+      // 1. Insert property into public.properties
+      const { data: propData, error: propError } = await supabase
+        .from("properties")
+        .insert({
+          title: cleanTitle,
+          slug: cleanSlug,
+          location: cleanLocation,
+          area: numArea,
+          price: numPrice,
+          price_unit: priceUnit,
+          property_type: propertyType,
+          status,
+          description: description.trim(),
+          highlights: highlights.filter((h) => h.trim().length > 0),
+          maps_url: mapsUrl.trim() || null,
+        })
+        .select()
+        .single();
+
+      if (propError) {
+        throw propError;
+      }
+
+      // 2. Insert images into public.property_images
+      if (images.length > 0 && propData?.id) {
+        const imageRows = images.map((url, idx) => ({
+          property_id: propData.id,
+          image_url: url,
+          display_order: idx,
+        }));
+
+        const { error: imgError } = await supabase
+          .from("property_images")
+          .insert(imageRows);
+
+        if (imgError) {
+          console.warn("Warning: Property created but image rows failed:", imgError.message);
+        }
+      }
+
+      setFormSuccess("Property created successfully! Redirecting to listings...");
+      setTimeout(() => {
+        router.push("/admin/properties");
+        router.refresh();
+      }, 1500);
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      setFormError(err.message || "Failed to save property to database. Please check permissions.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <AdminGuard>
+      <AdminLayout>
+        <div className="space-y-6 max-w-5xl mx-auto pb-12">
+          {/* Breadcrumb & Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <Link
+                href="/admin/properties"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-navy-950 transition-colors mb-1"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span>Back to All Properties</span>
+              </Link>
+              <h1 className="font-display text-2xl sm:text-3xl font-black text-navy-950">
+                Add New Property Listing
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Enter property details to publish live to BVS Real Estate catalog.
+              </p>
+            </div>
+          </div>
+
+          {/* Alerts */}
+          {formError && (
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-sm">Unable to save property</p>
+                <p className="text-xs mt-0.5">{formError}</p>
+              </div>
+            </div>
+          )}
+
+          {formSuccess && (
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3">
+              <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
+              <p className="font-bold text-sm">{formSuccess}</p>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Section 1: Basic Information */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+              <div className="border-b border-slate-100 pb-4">
+                <h2 className="text-base font-black text-navy-950 flex items-center gap-2">
+                  <span>1. Basic Property Details</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Define the listing title, permanent URL slug, and property classification.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Title */}
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Property Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                    placeholder="e.g., Premium Highway Facing Plot - 2400 Sq.Ft"
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                    required
+                  />
+                </div>
+
+                {/* Slug */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    URL Slug <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={slug}
+                      onChange={(e) => {
+                        setIsSlugEdited(true);
+                        setSlug(e.target.value);
+                      }}
+                      placeholder="e.g., highway-facing-plot-dindigul"
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-mono text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                      required
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Auto-generated from title. Creates public link: /properties/{slug || "..."}
+                  </p>
+                </div>
+
+                {/* Location */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Location / Locality <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g., Palani Road, Near Aavin, Dindigul"
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                    required
+                  />
+                </div>
+
+                {/* Property Type */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Property Type <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={propertyType}
+                    onChange={(e) => setPropertyType(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all bg-white"
+                  >
+                    {PROPERTY_TYPES.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Status */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Inventory Status <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as PropertyStatus)}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all bg-white"
+                  >
+                    <option value="AVAILABLE">AVAILABLE (Open for Inquiries)</option>
+                    <option value="RESERVED">RESERVED (Under Booking)</option>
+                    <option value="SOLD">SOLD (Closed Deal)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2: Pricing & Measurements */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+              <div className="border-b border-slate-100 pb-4">
+                <h2 className="text-base font-black text-navy-950">
+                  2. Pricing & Dimension Specifications
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Provide exact numerical measurements and price figures.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Area & Unit */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Land / Plot Area <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      step="any"
+                      min="0.01"
+                      value={area}
+                      onChange={(e) => setArea(e.target.value)}
+                      placeholder="e.g., 2400 or 5.5"
+                      className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                      required
+                    />
+                    <select
+                      value={areaUnit}
+                      onChange={(e) => setAreaUnit(e.target.value)}
+                      className="w-32 rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-navy-950 bg-slate-50 focus:border-navy-950"
+                    >
+                      {AREA_UNITS.map((unit) => (
+                        <option key={unit} value={unit}>
+                          {unit}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Price & Unit */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Listing Price <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      step="any"
+                      min="0.01"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="e.g., 28.5 or 45"
+                      className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                      required
+                    />
+                    <select
+                      value={priceUnit}
+                      onChange={(e) => setPriceUnit(e.target.value)}
+                      className="w-32 rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-navy-950 bg-slate-50 focus:border-navy-950"
+                    >
+                      {PRICE_UNITS.map((unit) => (
+                        <option key={unit} value={unit}>
+                          {unit}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Renders as: ₹{price || "0"} {priceUnit}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Description, Highlights & Map */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+              <div className="border-b border-slate-100 pb-4">
+                <h2 className="text-base font-black text-navy-950">
+                  3. Description & Selling Highlights
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Give clients a rich summary of documentation, neighborhood amenities, and road access.
+                </p>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Detailed Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Describe the property, accessibility to transport, legal verification status, water facility, and road connectivity..."
+                  className="w-full rounded-xl border border-slate-200 p-4 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                  required
+                />
+              </div>
+
+              {/* Highlights Dynamic List */}
+              <div className="space-y-3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Key Highlights / Features
+                </label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {highlights.map((item, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-navy-50 border border-navy-200/60 px-3 py-1.5 text-xs font-semibold text-navy-900"
+                    >
+                      <Sparkles className="h-3 w-3 text-gold-500" />
+                      <span>{item}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveHighlight(idx)}
+                        className="p-0.5 hover:text-red-600 rounded-md transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newHighlight}
+                    onChange={(e) => setNewHighlight(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddHighlight();
+                      }
+                    }}
+                    placeholder="Add key feature (e.g., 30ft Tar Road Access, Borewell Water)"
+                    className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddHighlight}
+                    className="rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-4 py-2.5 text-xs transition-colors"
+                  >
+                    Add Highlight
+                  </button>
+                </div>
+              </div>
+
+              {/* Google Maps URL */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Google Maps Location Link (Optional)
+                </label>
+                <div className="relative">
+                  <input
+                    type="url"
+                    value={mapsUrl}
+                    onChange={(e) => setMapsUrl(e.target.value)}
+                    placeholder="https://maps.google.com/?q=..."
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-950 focus:ring-1 focus:ring-navy-950 transition-all"
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Enables one-click 'View on Google Maps' button for visitors.
+                </p>
+              </div>
+            </div>
+
+            {/* Section 4: Polished Image Management with ImageManager */}
+            <ImageManager
+              images={images}
+              onChange={setImages}
+              disabled={submitting}
+            />
+
+            {/* Form Action Controls */}
+            <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4">
+              <Link
+                href="/admin/properties"
+                className="w-full sm:w-auto text-center px-6 py-3.5 rounded-2xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                Cancel
+              </Link>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-navy-950 hover:bg-navy-900 active:scale-95 text-white font-bold text-xs shadow-lg transition-all disabled:opacity-50"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin text-gold-400" />
+                    <span>Publishing Property to Supabase...</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4 text-gold-400" />
+                    <span>Publish Property Listing</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </AdminLayout>
+    </AdminGuard>
+  );
+}
