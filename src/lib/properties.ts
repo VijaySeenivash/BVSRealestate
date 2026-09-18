@@ -4,6 +4,15 @@ import { Property, PropertyFilterParams, DashboardStats, PropertyImage } from "@
 import { formatPrice } from "@/lib/utils";
 
 /**
+ * Validates whether a string matches a standard UUID format (8-4-4-4-12 hex characters).
+ * Protects PostgreSQL UUID columns from invalid input syntax errors.
+ */
+export function isUuid(value?: string | null): boolean {
+  if (!value || typeof value !== "string") return false;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.trim());
+}
+
+/**
  * Normalizes a raw property row (from Supabase or mock) into our standard Property type.
  */
 function normalizeProperty(raw: any): Property {
@@ -53,7 +62,7 @@ function normalizeProperty(raw: any): Property {
 /**
  * Fetches all properties matching optional filters.
  * Reads directly from Supabase `properties` table when configured;
- * otherwise uses realistic demo fallback.
+ * otherwise uses realistic demo fallback for offline development only.
  */
 export async function getProperties(params?: PropertyFilterParams): Promise<Property[]> {
   const supabase = getSupabaseClient();
@@ -136,11 +145,20 @@ export async function getProperties(params?: PropertyFilterParams): Promise<Prop
 
       return results;
     } catch (err) {
-      console.warn("[Supabase] Failed to fetch live data; falling back to demo catalog:", err);
+      console.warn("[Supabase] Failed to fetch live data:", err);
+      // In production (when Supabase is configured), return empty array instead of leaking mock properties
+      if (isSupabaseConfigured()) {
+        return [];
+      }
     }
   }
 
-  // Fallback to MOCK_PROPERTIES
+  // When Supabase is configured, never fall back to mock data
+  if (isSupabaseConfigured()) {
+    return [];
+  }
+
+  // Fallback to MOCK_PROPERTIES strictly for offline development without .env.local
   let results = MOCK_PROPERTIES.map(normalizeProperty);
 
   if (!params) return results;
@@ -210,6 +228,33 @@ export async function getProperties(params?: PropertyFilterParams): Promise<Prop
 }
 
 /**
+ * Fetches properties strictly for the Admin Dashboard.
+ * Reads directly from Supabase and NEVER falls back to mock properties,
+ * ensuring no mock IDs (such as prop-1) ever appear in administrative operations.
+ */
+export async function getAdminProperties(): Promise<Property[]> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("properties")
+      .select("*, property_images(*)")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("[Supabase getAdminProperties Error]:", error.message);
+      return [];
+    }
+
+    return (data || []).map(normalizeProperty);
+  } catch (err) {
+    console.error("[Supabase getAdminProperties Exception]:", err);
+    return [];
+  }
+}
+
+/**
  * Fetches a single property by slug with all its associated images.
  */
 export async function getPropertyBySlug(slug: string): Promise<Property | null> {
@@ -225,12 +270,20 @@ export async function getPropertyBySlug(slug: string): Promise<Property | null> 
 
       if (error) {
         console.error("[Supabase getPropertyBySlug Error]:", error.message);
+        return null;
       } else if (data) {
         return normalizeProperty(data);
       }
+      return null;
     } catch (err) {
-      console.warn("[Supabase] Failed to fetch property by slug; falling back to demo catalog:", err);
+      console.warn("[Supabase] Failed to fetch property by slug:", err);
+      return null;
     }
+  }
+
+  // Fallback strictly for offline local development
+  if (isSupabaseConfigured()) {
+    return null;
   }
 
   const found = MOCK_PROPERTIES.find((p) => p.slug === slug);
@@ -239,9 +292,19 @@ export async function getPropertyBySlug(slug: string): Promise<Property | null> 
 
 /**
  * Fetches a single property by ID with all its associated images.
+ * Validates UUID format before querying Supabase to prevent PostgreSQL syntax errors.
  */
 export async function getPropertyById(id: string): Promise<Property | null> {
   const supabase = getSupabaseClient();
+
+  // If id is not a valid UUID format, avoid querying PostgreSQL UUID column
+  if (!isUuid(id)) {
+    if (isSupabaseConfigured()) {
+      return null;
+    }
+    const found = MOCK_PROPERTIES.find((p) => p.id === id);
+    return found ? normalizeProperty(found) : null;
+  }
 
   if (supabase) {
     try {
@@ -253,12 +316,19 @@ export async function getPropertyById(id: string): Promise<Property | null> {
 
       if (error) {
         console.error("[Supabase getPropertyById Error]:", error.message);
+        return null;
       } else if (data) {
         return normalizeProperty(data);
       }
+      return null;
     } catch (err) {
-      console.warn("[Supabase] Failed to fetch property by id; falling back to demo catalog:", err);
+      console.warn("[Supabase] Failed to fetch property by id:", err);
+      return null;
     }
+  }
+
+  if (isSupabaseConfigured()) {
+    return null;
   }
 
   const found = MOCK_PROPERTIES.find((p) => p.id === id);
@@ -285,7 +355,7 @@ export async function getRecentProperties(limit: number = 4): Promise<Property[]
  * Fetches dashboard stats dynamically from database.
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const all = await getProperties();
+  const all = isSupabaseConfigured() ? await getAdminProperties() : await getProperties();
   return {
     total_properties: all.length,
     available: all.filter((p) => p.status === "AVAILABLE").length,

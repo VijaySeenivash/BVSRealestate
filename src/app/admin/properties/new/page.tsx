@@ -17,6 +17,7 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ImageManager } from "@/components/admin/ImageManager";
 import { supabase } from "@/lib/supabase/client";
 import { PropertyStatus } from "@/config/site";
+import { isUuid } from "@/lib/properties";
 
 const PROPERTY_TYPES = [
   "RESIDENTIAL PLOT",
@@ -165,6 +166,7 @@ export default function NewPropertyPage() {
       }
 
       // 1. Insert property into public.properties
+      // Note: We deliberately do NOT provide an 'id' field, letting PostgreSQL's DEFAULT gen_random_uuid() generate a clean UUID.
       const { data: propData, error: propError } = await supabase
         .from("properties")
         .insert({
@@ -172,6 +174,7 @@ export default function NewPropertyPage() {
           slug: cleanSlug,
           location: cleanLocation,
           area: numArea,
+          area_unit: areaUnit,
           price: numPrice,
           price_unit: priceUnit,
           property_type: propertyType,
@@ -180,15 +183,19 @@ export default function NewPropertyPage() {
           highlights: highlights.filter((h) => h.trim().length > 0),
           maps_url: mapsUrl.trim() || null,
         })
-        .select()
+        .select("id")
         .single();
 
       if (propError) {
         throw propError;
       }
 
-      // 2. Insert images into public.property_images
-      if (images.length > 0 && propData?.id) {
+      if (!propData?.id || !isUuid(propData.id)) {
+        throw new Error("Supabase insert succeeded but did not return a valid property UUID.");
+      }
+
+      // 2. Insert images into public.property_images with the verified UUID foreign key
+      if (images.length > 0) {
         const imageRows = images.map((url, idx) => ({
           property_id: propData.id,
           image_url: url,

@@ -13,7 +13,7 @@ import {
   Maximize2,
   TrendingUp,
 } from "lucide-react";
-import { getProperties, getDashboardStats } from "@/lib/properties";
+import { getAdminProperties, getDashboardStats } from "@/lib/properties";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatusBadge } from "@/components/properties/StatusBadge";
@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardStats();
-  const allProperties = await getProperties();
+  const allProperties = await getAdminProperties();
   const recentProperties = allProperties.slice(0, 5);
 
   return (
@@ -154,10 +154,17 @@ export default async function AdminDashboardPage() {
               </div>
 
               <div className="divide-y divide-slate-100">
-                {recentProperties.map((property) => {
-                  const thumbnail =
-                    property.images[0]?.image_url ||
-                    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=200&q=80";
+                {recentProperties.length === 0 ? (
+                  <div className="p-12 text-center text-slate-500 space-y-3">
+                    <Building2 className="h-8 w-8 mx-auto text-slate-300" />
+                    <p className="font-bold text-navy-950 text-sm">No properties in database yet</p>
+                    <p className="text-xs text-slate-400">Click &quot;Add Property&quot; to publish your first live listing.</p>
+                  </div>
+                ) : (
+                  recentProperties.map((property) => {
+                    const thumbnail =
+                      property.images[0]?.image_url ||
+                      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=200&q=80";
 
                   return (
                     <div
@@ -201,7 +208,7 @@ export default async function AdminDashboardPage() {
                       </div>
                     </div>
                   );
-                })}
+                }))}
               </div>
             </div>
 

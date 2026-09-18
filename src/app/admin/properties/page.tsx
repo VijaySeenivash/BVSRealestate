@@ -18,7 +18,7 @@ import {
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatusBadge } from "@/components/properties/StatusBadge";
-import { getProperties } from "@/lib/properties";
+import { getAdminProperties, isUuid } from "@/lib/properties";
 import { supabase } from "@/lib/supabase/client";
 import { deletePropertyImageFile } from "@/lib/supabase/auth";
 import { Property, PropertyStatus } from "@/types/property";
@@ -41,7 +41,7 @@ export default function AdminPropertiesPage() {
   const loadProperties = async () => {
     setLoading(true);
     try {
-      const data = await getProperties();
+      const data = await getAdminProperties();
       setProperties(data);
     } catch (err: any) {
       console.error("Error loading properties:", err);
@@ -57,6 +57,13 @@ export default function AdminPropertiesPage() {
   // Inline status change handler
   const handleStatusChange = async (property: Property, newStatus: PropertyStatus) => {
     if (property.status === newStatus) return;
+    if (!isUuid(property.id)) {
+      setActionNotice({
+        type: "error",
+        message: "Cannot update status: Invalid property UUID identifier.",
+      });
+      return;
+    }
     setUpdatingId(property.id);
     setActionNotice(null);
 
@@ -93,6 +100,14 @@ export default function AdminPropertiesPage() {
   // Delete confirmation handler
   const handleConfirmDelete = async () => {
     if (!deletingProperty) return;
+    if (!isUuid(deletingProperty.id)) {
+      setActionNotice({
+        type: "error",
+        message: "Cannot delete: Invalid property UUID identifier.",
+      });
+      setDeletingProperty(null);
+      return;
+    }
     setIsDeleting(true);
     setActionNotice(null);
 

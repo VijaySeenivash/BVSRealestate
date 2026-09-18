@@ -17,7 +17,7 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ImageManager } from "@/components/admin/ImageManager";
 import { supabase } from "@/lib/supabase/client";
-import { getPropertyById } from "@/lib/properties";
+import { getPropertyById, isUuid } from "@/lib/properties";
 import { PropertyStatus } from "@/config/site";
 
 const PROPERTY_TYPES = [
@@ -68,7 +68,11 @@ export default function EditPropertyPage() {
   // Load existing property data
   useEffect(() => {
     async function loadData() {
-      if (!propertyId) return;
+      if (!propertyId || !isUuid(propertyId)) {
+        setNotFound(true);
+        setLoadingInitial(false);
+        return;
+      }
       setLoadingInitial(true);
       try {
         const prop = await getPropertyById(propertyId);
@@ -129,6 +133,11 @@ export default function EditPropertyPage() {
     const cleanLocation = location.trim();
     const numArea = Number(area);
     const numPrice = Number(price);
+
+    if (!propertyId || !isUuid(propertyId)) {
+      setFormError("Cannot save changes: Invalid property UUID identifier.");
+      return;
+    }
 
     if (!cleanTitle) {
       setFormError("Please enter a property title.");
@@ -196,6 +205,7 @@ export default function EditPropertyPage() {
           slug: cleanSlug,
           location: cleanLocation,
           area: numArea,
+          area_unit: areaUnit,
           price: numPrice,
           price_unit: priceUnit,
           property_type: propertyType,

@@ -2,7 +2,7 @@ import { Property } from "@/types/property";
 
 export const MOCK_PROPERTIES: Property[] = [
   {
-    id: "prop-1",
+    id: "a1111111-1111-1111-1111-111111111111",
     name: "Green Valley Plot",
     slug: "green-valley-plot-dindigul",
     location: "Palani Road, Dindigul",
@@ -60,7 +60,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-2",
+    id: "a2222222-2222-2222-2222-222222222222",
     name: "Aavin Road House Plot",
     slug: "aavin-road-house-plot",
     location: "Near Aavin Palpannai, East Govindapuram, Dindigul",
@@ -111,7 +111,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-3",
+    id: "a3333333-3333-3333-3333-333333333333",
     name: "Modern 3BHK Independent House",
     slug: "modern-3bhk-independent-house-dindigul",
     location: "Chettinaickenpatti, Dindigul",
@@ -169,7 +169,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-4",
+    id: "a4444444-4444-4444-4444-444444444444",
     name: "Dindigul Agricultural Farm Land",
     slug: "dindigul-agricultural-farm-land",
     location: "Near Reddiarchatram, Palani Highway, Dindigul",
@@ -220,7 +220,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-5",
+    id: "a5555555-5555-5555-5555-555555555555",
     name: "Commercial Corner Site Dindigul",
     slug: "commercial-corner-site-dindigul",
     location: "Natham Road Junction, Dindigul",
@@ -264,7 +264,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-6",
+    id: "a6666666-6666-6666-6666-666666666666",
     name: "City View Residential Land",
     slug: "city-view-residential-land",
     location: "East Govindapuram Extension, Dindigul",
@@ -308,7 +308,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-7",
+    id: "a7777777-7777-7777-7777-777777777777",
     name: "Batlagundu Road Villa Plot",
     slug: "batlagundu-road-villa-plot",
     location: "Batlagundu Main Road, Dindigul",
@@ -344,7 +344,7 @@ export const MOCK_PROPERTIES: Property[] = [
     ],
   },
   {
-    id: "prop-8",
+    id: "a8888888-8888-8888-8888-888888888888",
     name: "Industrial Shed & Commercial Land",
     slug: "industrial-shed-commercial-land",
     location: "Vadamadurai Bypass, Dindigul",
