@@ -18,13 +18,13 @@ export function Logo({ variant = "dark", className, showTagline = true }: LogoPr
     <Link
       href="/"
       className={cn(
-        "group inline-flex items-center gap-3 transition-opacity hover:opacity-95 focus-visible:ring-2 focus-visible:ring-gold-500 rounded-xl p-1",
+        "group inline-flex items-center gap-2.5 sm:gap-3 transition-opacity hover:opacity-95 focus-visible:ring-2 focus-visible:ring-gold-500 rounded-xl p-1 min-w-0 max-w-[calc(100vw-115px)] sm:max-w-none",
         className
       )}
       aria-label="BVS Real Estate - Back to Home"
     >
       {/* Visual Architectural Emblem */}
-      <div className="relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy-900 via-navy-850 to-navy-950 p-2 shadow-md ring-1 ring-gold-500/40 transition-transform duration-300 group-hover:scale-105">
+      <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy-900 via-navy-850 to-navy-950 p-2 shadow-md ring-1 ring-gold-500/40 transition-transform duration-300 group-hover:scale-105">
         <svg
           viewBox="0 0 48 48"
           fill="none"
@@ -74,14 +74,14 @@ export function Logo({ variant = "dark", className, showTagline = true }: LogoPr
       </div>
 
       {/* Typography */}
-      <div className="flex flex-col">
+      <div className="flex flex-col min-w-0">
         <div className="flex items-center gap-1.5 leading-none">
-          <span className="font-display text-xl sm:text-2xl font-black tracking-tight text-bvsRed-600">
+          <span className="font-display text-lg sm:text-2xl font-black tracking-tight text-bvsRed-600 flex-shrink-0">
             BVS
           </span>
           <span
             className={cn(
-              "font-display text-base sm:text-lg font-extrabold tracking-wider",
+              "font-display text-sm sm:text-lg font-extrabold tracking-wider truncate",
               isLight ? "text-white" : "text-navy-950"
             )}
           >
@@ -92,7 +92,7 @@ export function Logo({ variant = "dark", className, showTagline = true }: LogoPr
         {showTagline && (
           <span
             className={cn(
-              "mt-1 line-clamp-1 text-[10px] sm:text-[11px] font-medium tracking-wide transition-colors",
+              "mt-1 truncate text-[10px] sm:text-[11px] font-medium tracking-wide transition-colors",
               isLight ? "text-gold-300" : "text-navy-700"
             )}
           >

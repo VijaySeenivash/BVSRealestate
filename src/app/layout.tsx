@@ -85,9 +85,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-gold-200 selection:text-navy-950 font-sans pb-20 sm:pb-0">
+      <body className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden antialiased selection:bg-gold-200 selection:text-navy-950 font-sans pb-20 sm:pb-0">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 w-full min-w-0 max-w-full">{children}</main>
         <Footer />
         <FloatingContact />
       </body>

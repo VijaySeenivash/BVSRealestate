@@ -10,16 +10,16 @@ interface FeaturedPropertiesProps {
 
 export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
   return (
-    <section className="py-20 bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-16 sm:py-20 bg-white w-full max-w-full min-w-0 overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-12">
+          <div className="min-w-0">
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1.5">
               <Sparkles className="h-3.5 w-3.5 text-gold-500 fill-gold-500/20" />
               <span>Handpicked Listings</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-black text-navy-950 tracking-tight">
+            <h2 className="font-display text-2xl sm:text-4xl font-black text-navy-950 tracking-tight break-words">
               Featured Properties in Dindigul
             </h2>
             <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
@@ -29,7 +29,7 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
 
           <Link
             href="/properties"
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 px-5 py-3 text-xs font-bold text-navy-950 transition-all border border-slate-200"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 px-5 py-3 text-xs font-bold text-navy-950 transition-all border border-slate-200 flex-shrink-0"
           >
             <span>View All Properties</span>
             <ArrowRight className="h-4 w-4 text-gold-600" />

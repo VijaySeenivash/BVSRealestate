@@ -9,9 +9,9 @@ export function FloatingContact() {
   return (
     <aside
       aria-label="Quick mobile contact actions"
-      className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 px-4 py-3 sm:hidden shadow-2xl"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 px-4 py-3 sm:hidden shadow-2xl w-full max-w-full overflow-hidden"
     >
-      <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 max-w-md mx-auto w-full min-w-0">
         <a
           href={getPhoneCallUrl()}
           className="flex items-center justify-center gap-2 rounded-2xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 py-3 px-3 text-xs font-black text-navy-950 border border-slate-300/80 shadow-sm min-h-[48px]"

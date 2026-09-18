@@ -7,36 +7,36 @@ import { getGeneralWhatsAppUrl, getPhoneCallUrl } from "@/lib/utils";
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-slate-300 border-t border-navy-900">
+    <footer className="bg-navy-950 text-slate-300 border-t border-navy-900 w-full max-w-full min-w-0 overflow-hidden">
       {/* Top Banner / Trust Bar */}
-      <div className="border-b border-navy-900/80 bg-navy-900/40 py-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+      <div className="border-b border-navy-900/80 bg-navy-900/40 py-8 w-full min-w-0">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left w-full min-w-0">
             <div className="flex items-center justify-center md:justify-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-800 text-gold-400 ring-1 ring-gold-500/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-800 text-gold-400 ring-1 ring-gold-500/20 flex-shrink-0">
                 <Compass className="h-6 w-6" />
               </div>
-              <div>
+              <div className="min-w-0 text-left">
                 <h4 className="font-display text-sm font-bold text-white">Local Dindigul Presence</h4>
                 <p className="text-xs text-slate-400 mt-0.5">East Govindapuram, Palani Road & bypass sites</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center md:justify-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-800 text-gold-400 ring-1 ring-gold-500/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-800 text-gold-400 ring-1 ring-gold-500/20 flex-shrink-0">
                 <ShieldCheck className="h-6 w-6" />
               </div>
-              <div>
+              <div className="min-w-0 text-left">
                 <h4 className="font-display text-sm font-bold text-white">Direct & Transparent</h4>
                 <p className="text-xs text-slate-400 mt-0.5">Verified titles with direct owner negotiation</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center md:justify-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-800 text-gold-400 ring-1 ring-gold-500/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-800 text-gold-400 ring-1 ring-gold-500/20 flex-shrink-0">
                 <Clock className="h-6 w-6" />
               </div>
-              <div>
+              <div className="min-w-0 text-left">
                 <h4 className="font-display text-sm font-bold text-white">Direct Access</h4>
                 <p className="text-xs text-slate-400 mt-0.5">{siteConfig.workingHours}</p>
               </div>
@@ -46,10 +46,10 @@ export function Footer() {
       </div>
 
       {/* Main Footer Content */}
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:py-16 sm:px-6 lg:px-8 w-full min-w-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 w-full min-w-0">
           {/* Column 1: Brand & Identity */}
-          <div className="space-y-4">
+          <div className="space-y-4 min-w-0">
             <Logo variant="light" showTagline={false} />
             <p className="text-xs sm:text-sm text-gold-300 font-semibold leading-relaxed">
               {siteConfig.taglineTamil}

@@ -70,7 +70,7 @@ export function Navbar() {
             : "bg-white/90 backdrop-blur-sm border-b border-slate-100 py-3.5"
         )}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 w-full min-w-0">
           {/* Brand Logo */}
           <Logo />
 
@@ -125,7 +125,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile Hamburger Toggle */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center gap-2 flex-shrink-0">
             <a
               href={getPhoneCallUrl()}
               className="p-2.5 text-navy-900 bg-slate-100 active:bg-slate-200 rounded-xl"
@@ -148,7 +148,7 @@ export function Navbar() {
 
         {/* Mobile Slide-down Drawer */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-b border-slate-200 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-6 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+          <div className="md:hidden border-b border-slate-200 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-6 shadow-2xl animate-in slide-in-from-top-2 duration-200 w-full max-w-full overflow-hidden">
             <nav className="flex flex-col space-y-1" aria-label="Mobile Navigation">
               {siteConfig.navLinks.map((link) => {
                 const isActive =

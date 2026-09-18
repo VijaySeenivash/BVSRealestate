@@ -12,7 +12,7 @@ export default async function HomePage() {
   const featuredProperties = await getFeaturedProperties();
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full min-w-0 max-w-full overflow-x-hidden">
       {/* 1. Hero Section */}
       <Hero />
 

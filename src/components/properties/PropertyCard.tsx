@@ -33,7 +33,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white border shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${
+      className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white border shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl w-full max-w-full min-w-0 ${
         isSold
           ? "border-slate-300/80 bg-slate-50/50 opacity-95"
           : isReserved
@@ -84,14 +84,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
       </div>
 
       {/* Property Details Body */}
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div className="flex flex-1 flex-col p-4 sm:p-6 min-w-0">
         {/* Price & Area Header */}
-        <div className="flex items-baseline justify-between gap-2">
-          <p className="font-display text-2xl font-black tracking-tight text-navy-950">
+        <div className="flex items-baseline justify-between gap-1.5 min-w-0">
+          <p className="font-display text-xl sm:text-2xl font-black tracking-tight text-navy-950 truncate">
             {property.price_display}
           </p>
 
-          <div className="flex items-center gap-1 text-xs font-bold text-slate-700 bg-slate-100/90 px-2.5 py-1 rounded-lg border border-slate-200">
+          <div className="flex items-center gap-1 text-xs font-bold text-slate-700 bg-slate-100/90 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-200 flex-shrink-0">
             <Maximize2 className="h-3.5 w-3.5 text-navy-700" />
             <span>{formatArea(property.area, property.area_unit || "sq.ft")}</span>
           </div>
@@ -125,18 +125,18 @@ export function PropertyCard({ property }: PropertyCardProps) {
         )}
 
         {/* Action Buttons */}
-        <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2.5">
+        <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 sm:gap-2.5 min-w-0">
           {/* View Details */}
           <Link
             href={`/properties/${property.slug}`}
-            className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-bold transition-all shadow-sm focus-visible:ring-2 ${
+            className={`inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-xl px-2 sm:px-3 py-2.5 text-[11px] sm:text-xs font-bold transition-all shadow-sm focus-visible:ring-2 min-w-0 ${
               isSold
                 ? "bg-slate-700 hover:bg-slate-800 text-white"
                 : "bg-navy-900 hover:bg-navy-800 text-white"
             }`}
           >
-            <span>{isSold ? "View Sold Info" : "View Details"}</span>
-            <ArrowUpRight className="h-3.5 w-3.5" />
+            <span className="truncate">{isSold ? "View Sold Info" : "View Details"}</span>
+            <ArrowUpRight className="h-3.5 w-3.5 flex-shrink-0" />
           </Link>
 
           {/* Quick WhatsApp with status sensitivity */}
@@ -144,7 +144,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-bold transition-all ${
+            className={`inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-xl px-2 sm:px-3 py-2.5 text-[11px] sm:text-xs font-bold transition-all min-w-0 ${
               isSold
                 ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
                 : isReserved
@@ -157,8 +157,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 : `Enquire about ${property.title || property.name} on WhatsApp`
             }
           >
-            <MessageCircle className="h-3.5 w-3.5 text-emerald-600 fill-emerald-600/20" />
-            <span>{isSold ? "Find Similar" : isReserved ? "Check Status" : "WhatsApp"}</span>
+            <MessageCircle className="h-3.5 w-3.5 flex-shrink-0 text-emerald-600 fill-emerald-600/20" />
+            <span className="truncate">{isSold ? "Find Similar" : isReserved ? "Check Status" : "WhatsApp"}</span>
           </a>
         </div>
       </div>

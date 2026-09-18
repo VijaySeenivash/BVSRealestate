@@ -58,14 +58,14 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   const properties = await getProperties(filterParams);
 
   return (
-    <div className="bg-slate-50 min-h-screen py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-slate-50 min-h-screen py-10 sm:py-12 w-full max-w-full min-w-0 overflow-x-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
         {/* Page Header */}
-        <div className="mb-8">
+        <div className="mb-8 min-w-0">
           <span className="text-xs font-bold uppercase tracking-widest text-bvsRed-600">
             Dindigul Real Estate Listings
           </span>
-          <h1 className="mt-1 text-3xl sm:text-4xl font-black text-navy-950">
+          <h1 className="mt-1 text-2xl sm:text-4xl font-black text-navy-950 break-words">
             Explore Properties
           </h1>
           <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl">

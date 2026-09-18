@@ -107,8 +107,8 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
   const whatsappUrl = getPropertyWhatsAppUrl(property.name, property.location);
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8 sm:py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-slate-50 min-h-screen py-8 sm:py-12 w-full max-w-full min-w-0 overflow-x-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
         {/* Breadcrumb Navigation */}
         <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs font-semibold text-slate-500">
           <Link href="/" className="hover:text-navy-950 transition-colors">
@@ -119,7 +119,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             Properties
           </Link>
           <span>/</span>
-          <span className="text-navy-950 font-bold truncate max-w-xs">{property.name}</span>
+          <span className="text-navy-950 font-bold truncate max-w-[160px] sm:max-w-xs">{property.name}</span>
         </nav>
 
         {/* Back Link */}
@@ -134,9 +134,9 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         </div>
 
         {/* Top Header Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/80 shadow-sm mb-8">
+        <div className="bg-white rounded-3xl p-5 sm:p-9 border border-slate-200/80 shadow-sm mb-8 w-full min-w-0">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2.5 mb-3 flex-wrap">
                 <StatusBadge status={property.status} size="md" />
                 <span className="rounded-full bg-navy-100 text-navy-950 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wide">
@@ -149,7 +149,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 )}
               </div>
 
-              <h1 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-navy-950 tracking-tight">
+              <h1 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-navy-950 tracking-tight break-words">
                 {property.name}
               </h1>
 
@@ -193,9 +193,9 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         </div>
 
         {/* 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full min-w-0">
           {/* Main Details (Left 8 cols) */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="lg:col-span-8 space-y-8 w-full min-w-0">
             {/* Gallery Section */}
             <div className="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
               <h2 className="text-base font-bold text-navy-950 mb-4 flex items-center justify-between">
@@ -367,7 +367,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
           </div>
 
           {/* Sticky Sidebar (Right 4 cols) */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-4 w-full min-w-0">
             <div className="sticky top-24 space-y-6">
               <PropertyContactActions property={property} />
 
@@ -384,16 +384,16 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
         {/* Related Properties */}
         {relatedProperties.length > 0 && (
-          <div className="mt-20 pt-12 border-t border-slate-200">
-            <div className="mb-8">
+          <div className="mt-20 pt-12 border-t border-slate-200 w-full min-w-0">
+            <div className="mb-8 min-w-0">
               <span className="text-xs font-bold uppercase tracking-widest text-bvsRed-600">
                 Similar Listings
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-black text-navy-950 mt-1">
+              <h2 className="font-display text-2xl sm:text-3xl font-black text-navy-950 mt-1 break-words">
                 More Properties in Dindigul
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full min-w-0">
               {relatedProperties.map((p) => (
                 <PropertyCard key={p.id} property={p} />
               ))}

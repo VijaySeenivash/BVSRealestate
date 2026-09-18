@@ -22,14 +22,14 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="bg-slate-50 min-h-screen py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-slate-50 min-h-screen py-10 sm:py-16 w-full max-w-full min-w-0 overflow-x-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
         {/* Header */}
-        <div className="mb-12 text-center max-w-2xl mx-auto">
+        <div className="mb-10 sm:mb-12 text-center max-w-2xl mx-auto min-w-0">
           <span className="text-xs font-bold uppercase tracking-widest text-bvsRed-600">
             Direct & Transparent Communication
           </span>
-          <h1 className="font-display text-3xl sm:text-5xl font-black text-navy-950 tracking-tight mt-1.5">
+          <h1 className="font-display text-2xl sm:text-5xl font-black text-navy-950 tracking-tight mt-1.5 break-words">
             Contact BVS Real Estate
           </h1>
           <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
@@ -37,15 +37,15 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full min-w-0">
           {/* Left Column (7 cols): Direct Contact Information */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200/90 shadow-md space-y-8">
-              <div>
+          <div className="lg:col-span-7 space-y-6 w-full min-w-0">
+            <div className="bg-white rounded-3xl p-5 sm:p-10 border border-slate-200/90 shadow-md space-y-8 w-full min-w-0">
+              <div className="min-w-0">
                 <span className="text-xs font-bold uppercase tracking-wider text-gold-600">
                   Business Entity
                 </span>
-                <h2 className="font-display text-2xl sm:text-3xl font-black text-navy-950 mt-1">
+                <h2 className="font-display text-xl sm:text-3xl font-black text-navy-950 mt-1 break-words">
                   {siteConfig.businessName}
                 </h2>
                 <p className="text-xs text-gold-700 font-semibold mt-1">
@@ -149,13 +149,13 @@ export default function ContactPage() {
           </div>
 
           {/* Right Column (5 cols): Map & Local Service Areas */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-3xl p-7 sm:p-9 border border-slate-200/90 shadow-md space-y-6">
-              <div>
+          <div className="lg:col-span-5 space-y-6 w-full min-w-0">
+            <div className="bg-white rounded-3xl p-5 sm:p-9 border border-slate-200/90 shadow-md space-y-6 w-full min-w-0">
+              <div className="min-w-0">
                 <span className="text-xs font-bold uppercase tracking-wider text-bvsRed-600">
                   Location Map
                 </span>
-                <h3 className="font-display text-2xl font-black text-navy-950 mt-1">
+                <h3 className="font-display text-xl sm:text-2xl font-black text-navy-950 mt-1 break-words">
                   East Govindapuram, Dindigul
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">

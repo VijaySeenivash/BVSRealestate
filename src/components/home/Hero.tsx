@@ -7,7 +7,7 @@ import { getPhoneCallUrl } from "@/lib/utils";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[640px] lg:min-h-[720px] flex items-center bg-navy-950 overflow-hidden">
+    <section className="relative min-h-[600px] sm:min-h-[640px] lg:min-h-[720px] flex items-center bg-navy-950 overflow-hidden w-full max-w-full">
       {/* High Quality Real-Estate Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -23,26 +23,26 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-black/40" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 w-full">
-        <div className="max-w-3xl">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:py-20 sm:px-6 lg:px-8 w-full min-w-0">
+        <div className="max-w-3xl min-w-0">
           {/* Tamil Tagline Trust Pill */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-navy-900/90 border border-gold-500/50 px-4 py-2 backdrop-blur-md shadow-xl mb-6">
-            <span className="relative flex h-2 w-2">
+          <div className="inline-flex items-center gap-2 rounded-full bg-navy-900/90 border border-gold-500/50 px-3.5 sm:px-4 py-1.5 sm:py-2 backdrop-blur-md shadow-xl mb-6 max-w-full">
+            <span className="relative flex h-2 w-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-bvsRed-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-bvsRed-600"></span>
             </span>
-            <span className="text-xs sm:text-sm font-semibold text-gold-300 tracking-wide">
+            <span className="text-[11px] sm:text-sm font-semibold text-gold-300 tracking-wide truncate">
               {siteConfig.taglineTamil}
             </span>
           </div>
 
           {/* Main Hero Heading */}
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]">
+          <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15] break-words">
             {siteConfig.heroHeading}
           </h1>
 
           {/* Supporting Text */}
-          <p className="mt-5 text-base sm:text-xl text-slate-200 font-normal leading-relaxed max-w-2xl">
+          <p className="mt-4 sm:mt-5 text-sm sm:text-xl text-slate-200 font-normal leading-relaxed max-w-2xl">
             {siteConfig.heroSubheading}
           </p>
 
@@ -63,10 +63,10 @@ export function Hero() {
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+          <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3.5 w-full sm:w-auto">
             <Link
               href="/properties"
-              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-600 hover:to-gold-600 px-7 py-4 text-sm font-extrabold text-navy-950 shadow-lg hover:shadow-gold-500/20 active:scale-95 transition-all duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-600 hover:to-gold-600 px-7 py-4 text-sm font-extrabold text-navy-950 shadow-lg hover:shadow-gold-500/20 active:scale-95 transition-all duration-200"
             >
               <span>Explore Properties</span>
               <ArrowRight className="h-4 w-4" />
@@ -74,7 +74,7 @@ export function Hero() {
 
             <a
               href={getPhoneCallUrl()}
-              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 px-6 py-4 text-sm font-bold text-white backdrop-blur-md active:scale-95 transition-all duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 px-6 py-4 text-sm font-bold text-white backdrop-blur-md active:scale-95 transition-all duration-200"
             >
               <Phone className="h-4 w-4 text-bvsRed-500 animate-pulse" />
               <span>Call ({siteConfig.phone})</span>
@@ -82,7 +82,7 @@ export function Hero() {
           </div>
 
           {/* Trust Highlights Bar */}
-          <div className="mt-12 pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
             {siteConfig.trustStats.map((stat, i) => (
               <div key={i} className="space-y-0.5">
                 <p className="font-display text-xl sm:text-2xl font-black text-gold-400">

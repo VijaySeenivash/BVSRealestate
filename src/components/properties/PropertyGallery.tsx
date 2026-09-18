@@ -49,7 +49,7 @@ export function PropertyGallery({ images, propertyName }: PropertyGalleryProps) 
   }
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-3.5 w-full max-w-full min-w-0">
       {/* Main Large Image Container */}
       <div className="group relative aspect-[16/10] w-full overflow-hidden rounded-3xl bg-slate-900 shadow-md">
         <Image
@@ -108,7 +108,7 @@ export function PropertyGallery({ images, propertyName }: PropertyGalleryProps) 
 
       {/* Interactive Thumbnail Strip */}
       {images.length > 1 && (
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin">
+        <div className="w-full max-w-full min-w-0 flex items-center gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin -mx-1 px-1">
           {images.map((img, idx) => (
             <button
               key={img.id || idx}

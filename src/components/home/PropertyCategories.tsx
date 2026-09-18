@@ -14,15 +14,15 @@ const CATEGORY_IMAGES: Record<string, string> = {
 
 export function PropertyCategories() {
   return (
-    <section className="py-20 bg-slate-50 border-t border-slate-200/60">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-16 sm:py-20 bg-slate-50 border-t border-slate-200/60 w-full max-w-full min-w-0 overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-12">
+          <div className="min-w-0">
             <span className="text-xs font-bold uppercase tracking-widest text-bvsRed-600">
               Browse by Category
             </span>
-            <h2 className="mt-1.5 font-display text-3xl sm:text-4xl font-black text-navy-950">
+            <h2 className="mt-1.5 font-display text-2xl sm:text-4xl font-black text-navy-950 break-words">
               Explore Property Types
             </h2>
             <p className="mt-2 text-sm text-slate-600 max-w-xl">
@@ -32,7 +32,7 @@ export function PropertyCategories() {
 
           <Link
             href="/properties"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-navy-950 hover:text-navy-700 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-navy-950 hover:text-navy-700 transition-colors flex-shrink-0"
           >
             <span>View All Listings</span>
             <ChevronRight className="h-4 w-4 text-gold-600" />
@@ -40,7 +40,7 @@ export function PropertyCategories() {
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 w-full min-w-0">
           {siteConfig.propertyTypes.map((cat) => {
             const imageUrl = CATEGORY_IMAGES[cat.id] || CATEGORY_IMAGES["LAND"];
             return (

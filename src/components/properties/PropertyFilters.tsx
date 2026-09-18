@@ -78,13 +78,13 @@ export function PropertyFilters({ locations }: PropertyFiltersProps) {
     sortBy !== "newest";
 
   return (
-    <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-sm mb-8">
+    <div className="w-full max-w-full min-w-0 rounded-3xl bg-white border border-slate-200/90 p-4 sm:p-6 shadow-sm mb-8 overflow-hidden">
       {/* Category Pills Bar */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-5 border-b border-slate-100 scrollbar-none">
+      <div className="w-full max-w-full min-w-0 flex items-center gap-1.5 overflow-x-auto pb-3 mb-5 border-b border-slate-100 scrollbar-none -mx-1 px-1">
         <button
           type="button"
           onClick={() => handleQuickTypeSelect("ALL")}
-          className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+          className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 ${
             propertyType === "ALL"
               ? "bg-navy-950 text-white shadow-sm"
               : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -97,7 +97,7 @@ export function PropertyFilters({ locations }: PropertyFiltersProps) {
             key={t.id}
             type="button"
             onClick={() => handleQuickTypeSelect(t.id)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               propertyType === t.id
                 ? "bg-navy-950 text-white shadow-sm"
                 : "bg-slate-100 text-slate-700 hover:bg-slate-200"

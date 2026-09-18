@@ -24,24 +24,24 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="bg-slate-50 min-h-screen py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-slate-50 min-h-screen py-10 sm:py-16 w-full max-w-full min-w-0 overflow-x-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full min-w-0">
         {/* Hero Banner */}
-        <div className="bg-navy-950 rounded-3xl p-8 sm:p-16 text-white relative overflow-hidden mb-16 shadow-2xl">
+        <div className="bg-navy-950 rounded-3xl p-6 sm:p-16 text-white relative overflow-hidden mb-12 sm:mb-16 shadow-2xl w-full max-w-full min-w-0">
           <div className="absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-gold-500/15 blur-3xl pointer-events-none" />
-          <div className="relative z-10 max-w-3xl">
+          <div className="relative z-10 max-w-3xl min-w-0">
             <span className="text-xs font-bold uppercase tracking-widest text-gold-400">
               About BVS Real Estate
             </span>
-            <h1 className="mt-2 font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+            <h1 className="mt-2 font-display text-2xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight break-words">
               Helping You Find the Right Ground in Dindigul
             </h1>
-            <p className="mt-5 text-base sm:text-lg text-slate-300 leading-relaxed">
+            <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-slate-300 leading-relaxed">
               BVS Real Estate helps customers explore lands and properties based on their requirements. Grounded in East Govindapuram, Dindigul, we connect buyers and sellers through direct, personal contact and verified property details.
             </p>
 
-            <div className="mt-6 flex items-center gap-2 text-gold-300 font-bold text-sm">
-              <span className="h-2 w-2 rounded-full bg-gold-400" />
+            <div className="mt-6 flex flex-wrap items-center gap-2 text-gold-300 font-bold text-xs sm:text-sm max-w-full">
+              <span className="h-2 w-2 rounded-full bg-gold-400 flex-shrink-0" />
               <span>{siteConfig.taglineTamil}</span>
             </div>
           </div>
